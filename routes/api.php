@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:api');
+});
+
+Route::resource('workers', "API\\WorkersController")->names('workers');
+Route::resource('machines', "API\\MachinesController")->names('machines');
+Route::resource('queue', "API\\QueueController")->names('queue');
+Route::get('worker-history/{worker_id}', ['uses' => "API\\QueueController@workerHistory", 'as' => 'worker-history']);
+Route::get('machine-history/{machine_id}', ['uses' => "API\\QueueController@machineHistory", 'as' => 'machine-history']);
+Route::get('machine-active-list', ['uses' => "API\\MachinesController@getActiveList",  'as' => 'getActiveList']);
+
+
